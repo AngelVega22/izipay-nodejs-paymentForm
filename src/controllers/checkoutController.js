@@ -22,7 +22,7 @@ controller.home = (req, res) => {
 }
 
 // CREACIÓN DEL FORMTOKEN
-controller.checkout = (req, res,next) => {
+controller.checkout = (req, res, next) => {
   request.post({
     url: `${endpoint}/api-payment/V4/Charge/CreatePayment`,
     headers: {
@@ -30,25 +30,23 @@ controller.checkout = (req, res,next) => {
       'Content-Type': 'application/json'
     },
     json: order
-  }, 
-  function(error, response, body) {
-    if (body.status === 'SUCCESS')
-    {
-      const formtoken = body.answer.formToken;
-      res.render("checkout",
-      {formtoken ,publickey , endpoint}
-    );
-    }
-    else
-    {
-      console.error(body);
-      res.status(500).send('error');
-    }  
-  })
+  },
+    function (error, response, body) {
+      if (body.status === 'SUCCESS') {
+        const formtoken = body.answer.formToken;
+        res.render("checkout",
+          { formtoken, publickey, endpoint }
+        );
+      }
+      else {
+        console.error(body);
+        res.status(500).send('error');
+      }
+    })
 };
 
 //MANEJO DE LA URL DE RETORNO
-controller.paid =  (req,res)=> {
+controller.paid = (req, res) => {
 
   const answer = JSON.parse(req.body["kr-answer"])
   const hash = req.body["kr-hash"]
@@ -56,34 +54,33 @@ controller.paid =  (req,res)=> {
   const answerHash = Hex.stringify(
     hmacSHA256(JSON.stringify(answer), keys.HMACSHA256)
   )
-    orderDetails = answer.orderDetails
+  orderDetails = answer.orderDetails
 
   if (hash === answerHash)
-   res.status(200).render('paid', {'response' : answer.orderStatus , 'details':orderDetails} )
-  else res.status(500).render('paid', {'response' : 'Error catastrófico'})
+    res.status(200).render('paid', { 'response': answer.orderStatus, 'details': orderDetails })
+  else res.status(500).render('paid', { 'response': 'Error catastrófico' })
 }
 
-//IPN
-controller.ipn =  (req,res)=> {
-  console.log(req);
-  console.log(res);
-  console.log(req.body);
+//IPN ========================================================================//
+controller.ipn = (req, res) => {
+
   const answer = JSON.parse(req.body["kr-answer"])
   const hash = req.body["kr-hash"]
 
   const answerHash = Hex.stringify(
-    hmacSHA256(JSON.stringify(answer), keys.HMACSHA256)
+    hmacSHA256(JSON.stringify(answer), keys.password)
   )
-  console.log(answer);
+  console.log(answerHash);
   console.log(hash);
-  res.status(200).send({'response' : answer.orderStatus })
+
+  if (hash === answerHash)
+    res.status(200).send({ 'response': answer.orderStatus })
+  else res.status(500).send({ 'response': 'Error catastrófico, puede estar teniendo un intento de fraude' })
 
 }
-
-
 //API ========================================================================//
 
-controller.apiCheckout = (req,res,next) => {
+controller.apiCheckout = (req, res, next) => {
   request.post({
     url: `${endpoint}/api-payment/V4/Charge/CreatePayment`,
     headers: {
@@ -91,22 +88,20 @@ controller.apiCheckout = (req,res,next) => {
       'Content-Type': 'application/json'
     },
     json: order
-  }, 
-  function(error, response, body) {
-    if (body.status === 'SUCCESS')
-    {
-      const formtoken = body.answer.formToken;
-      res.send({formtoken , publickey , endpoint})
-    }
-    else
-    {
-      console.error(body);
-      res.status(500).send('error');
-    }  
-  })
+  },
+    function (error, response, body) {
+      if (body.status === 'SUCCESS') {
+        const formtoken = body.answer.formToken;
+        res.send({ formtoken, publickey, endpoint })
+      }
+      else {
+        console.error(body);
+        res.status(500).send('error');
+      }
+    })
 };
 
-controller.apiValidate = (req,res,next) => {
+controller.apiValidate = (req, res, next) => {
 
   const answer = JSON.parse(req.body["kr-answer"])
   const hash = req.body["kr-hash"]
@@ -114,11 +109,11 @@ controller.apiValidate = (req,res,next) => {
   const answerHash = Hex.stringify(
     hmacSHA256(JSON.stringify(answer), keys.HMACSHA256)
   )
-    orderDetails = answer.orderDetails
-  
+  orderDetails = answer.orderDetails
+
   if (hash === answerHash)
-   res.status(200).send(  {'response' : answer.orderStatus , 'details':orderDetails}  )
-  else res.status(500).send( {'response' : 'Error catastrófico'})
+    res.status(200).send({ 'response': answer.orderStatus, 'details': orderDetails })
+  else res.status(500).send({ 'response': 'Error catastrófico' })
 }
 
 
