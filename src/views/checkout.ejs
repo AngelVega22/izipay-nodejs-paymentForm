@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IZIPAY</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/journal/bootstrap.min.css"
+        integrity="sha384-QDSPDoVOoSWz2ypaRUidLmLYl4RyoBWI44iA5agn6jHegBxZkNqgm2eHb6yZ5bYs" crossorigin="anonymous" />
+    <!-- Javascript library. Should be loaded in head section -->
+    <script src="<%= endpoint %>/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js"
+        kr-public-key="<%= publickey %>" kr-post-url-success="paid">
+        </script>
+    <!-- theme and plugins. should be loaded after the javascript library -->
+    <!-- not mandatory but helps to have a nice payment form out of the box -->
+    <link rel="stylesheet" href="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic-reset.css">
+    <script src="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic.js">
+    </script>
+    <style>
+        .bg-form {
+            border-radius: 5px;
+            background: #ffffff;
+            padding: 5%;
+            margin-top: 2%;
+            box-shadow: inset 10px 10px 20px #e8e8e8,
+                inset -10px -10px 20px #ffffff;
+        }
+        .kr-embedded {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body style="background-color: #FF2D46;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand mb-1"><img
+                    src="https://iziweb001b.s3.amazonaws.com/webresources/img/logo.png" width="80" alt=""></a>
+            <div id="navbarColor01">
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <section>
+            <div class="row">
+                <div class="col-md-4">
+                    <a class="btn btn-outline-light mt-1 " href="/">
+                        Volver
+                    </a>
+                </div>
+                <div class="col-md-4  ">
+                    <h1 class="h4 mt-3 mb-4 text-white ">Checkout</h1>
+                    <!-- payment form -->
+                    <div class="kr-embedded bg-form" kr-form-token="<%= formtoken %>">
+
+                        <!-- payment form fields -->
+                        <div class="kr-pan"></div>
+                        <div class="kr-expiry"></div>
+                        <div class="kr-security-code"></div>
+
+                        <!-- payment form submit button -->
+                        <button class="kr-payment-button"></button>
+
+                        <!-- error zone -->
+                        <div class="kr-form-error"></div>
+                    </div>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </section>
+    </div>
+    <%- include ('partials/_footer') -%>

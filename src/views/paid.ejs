@@ -1,0 +1,29 @@
+<%- include ('partials/_header') -%>
+    <section class="container">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <img class="container mt-5 mb-5" src="https://iziweb001b.s3.amazonaws.com/webresources/img/logo.png" alt="">
+
+                <% if(response == 'PAID'){ %>
+                    <h1 class="text-white text-center mb-2">
+                        <h1 class="text-white text-center">¡Felicidades! </h1>
+                        <p class="text-white text-center" > orden N°: <%= details.orderId %></p>
+                        <p class="text-white text-center" > Monto pagado: S/. <%= details.orderTotalAmount /100 %></p>
+
+                        <h3 class="text-white text-center mb-5">Tu prueba ha sido exitosa</h3>
+                        
+                    </h1>
+                    <% } else{ %>
+                     <h1 class="text-white text-center mb-4"><%= response%></h1>
+                        <% } %>
+                            <form action="/checkout" method="post">
+                                <button class="btn btn-primary w-100">
+                                    volver a Probar
+                                </button>
+                            </form>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </section>
+    <%- include ('partials/_footer') -%>
